@@ -1,0 +1,38 @@
+Apilar todas las cartas en 4 columnas, 1 por palo en orden ascendente del 1 al 12.
+Es decir en la parte superior de la matriz, se pueden colocar los 1 y aca si se ordenan por palo.
+Termina el juego
+
+
+
+1ro
+Acomodar todas las cartas en 7 columnas
+
+
+Columna 1 
+1 carta boca arriba
+
+Columna 2
+1 carta boca abajo 1 boca arriba
+
+Columna 3
+2 cartas boca abajo 1 boca arriba
+
+Columna 4
+3 carta boca abajo 1 boca arriba
+
+Columna 5
+4 carta boca abajo 1 boca arriba
+
+Columna 6
+5 carta boca abajo 1 boca arriba
+
+Columna 7
+6 carta boca abajo 1 boca arriba
+
+Los 1 se colocan en la fila superior
+
+Regla
+Las cartas solamente se pueden mover de un monticulo a otro, si la carta es inferior en numero y no es del mismo palo.
+Ejemplo 8 de espada abajo de 9 de basto. Esto nos permetiria dar vuelta la carta que estaba en el monticulo debjao del 8 de espada.
+
+Cuando ya no se pueden hacer mas movimientos en el tablero, se pueden dar vueltas cartas que quedaron en el mazo
