@@ -1,3 +1,6 @@
+import pygame
+
+#tablero
 def mostrar_tablero(tablero):
     """
     toma la matriz resultante de la baraja, 
@@ -37,7 +40,7 @@ def mostrar_tablero(tablero):
         print(linea)
 
 
-
+#ruta de iamgenes
 def obtener_ruta_imagen(carta: tuple) -> str:
     """
     Toma una carta, devuelve la ruta de la imagen
@@ -56,3 +59,39 @@ def obtener_ruta_imagen(carta: tuple) -> str:
     nombre_archivo = f"{numero} de {palo_singular}.jpg"
     ruta = f"cartas/{nombre_archivo}"
     return ruta
+
+
+# PILAS
+
+def inicializar_pilas()-> dict:
+    """
+    Esta funcion crea el diccionario para las pilas acumuladoras
+    """
+
+    pilas = {
+        "oros": [],
+        "copas": [],
+        "espadas": [],
+        "bastos": []
+    }
+
+    return pilas
+
+
+# funcion para agregarle border radius a las imagenes
+def redondear_imagen(imagen, ancho, alto, radio_borde=4):
+    """
+    retonra las imagenes con border radius.
+    """
+    superficie_redondeada = pygame.Surface((ancho, alto), pygame.SRCALPHA)
+    
+    # superficie de la carta
+    pygame.draw.rect(superficie_redondeada, (255, 255, 255), (0, 0, ancho, alto), border_radius=radio_borde)
+
+    imagen_redimensionada = pygame.transform.scale(imagen, (ancho, alto))
+    #border radius
+    imagen_redimensionada.blit(superficie_redondeada, (0, 0), special_flags=pygame.BLEND_RGBA_MIN)
+
+    return imagen_redimensionada
+
+
