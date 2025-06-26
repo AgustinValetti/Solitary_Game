@@ -3,12 +3,10 @@ import random
 
 def generar_baraja(usando_48_cartas:bool=False)-> tuple:
     """
-    Esta funcion genera una baraja de listas tupla con palo y numero.
-    
-    recibe como parametro el valor de False por defecto para las 48 cartas
+    Esta funcion crea la baraja de lista tupla.
+    toma como parametro el valor de False por defecto para las 48 cartas
     y en caso de indicar True, genera la baraja de 40 cartas.
-        
-    Retorna una tupla.
+    Retorna una tupla
     """
     palos = ["oros", "copas", "espadas", "bastos"]
     
