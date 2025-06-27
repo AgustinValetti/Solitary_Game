@@ -176,7 +176,6 @@ def intentar_mover_a_columna(tablero:list
         if palo_carta_superior != palo_carta and numero_carta_superior == numero_carta + 1:
             columna_destino.append(carta)
             return True
-
     return False
 
 
@@ -205,7 +204,7 @@ def intentar_mover_a_pila(pilas:dict
             return False
     else:
         # orden ascendente
-        numero_superior = pila_actual[-1]
+        _,numero_superior = pila_actual[-1]
         if numero_carta == numero_superior + 1:
             pilas[palo_destino].append(carta)
             return True

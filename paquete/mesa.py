@@ -4,7 +4,7 @@ def repartir_tablero(baraja:list):
     """
     Reparte la baraja en 7 columnas
     Devuelve el tablero  7 columnas con cartas boca abajo
-    y una boca arriba, y tambien el mazo con las cartas restantes.
+    y una boca arriba, y tambien el mazo con las cartas
     """
     tablero = []
     indice = 0
