@@ -280,7 +280,9 @@ def intentar_mover_a_columna(tablero:list
 
 
 
-def intentar_mover_a_pila(pilas, cartas, palo_destino):
+def intentar_mover_a_pila(pilas:list
+                          ,cartas:list
+                          ,palo_destino:str)-> bool:
     """
     Esta funcion acumula las cartas en orden ascendente en las pilas
 
@@ -321,3 +323,29 @@ def intentar_mover_a_pila(pilas, cartas, palo_destino):
                 pila.append(carta)
                 return True
     return False
+
+
+####### partida finalizada
+
+
+def finalizar_partida(pilas: dict) -> bool:
+    """
+    Esta funcion valida el estado
+    de la partida
+    """
+    for palo in ["oros", "copas", "espadas", "bastos"]:
+        if len(pilas[palo]) != 10:
+            return False
+    return True
+
+##bubble sort
+
+def ordenar_ranking(ranking:list)-> list:
+    """
+    Esta funcion ordena el ranking de menor a mayor
+    """
+    for i in range(len(ranking)):
+        for j in range(0, len(ranking) - i - 1):
+            if ranking[j][1] > ranking[j + 1][1]:  
+                ranking[j], ranking[j + 1] = ranking[j + 1], ranking[j]
+    return ranking
