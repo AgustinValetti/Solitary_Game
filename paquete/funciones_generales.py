@@ -1,5 +1,5 @@
 import pygame
-from globals.variables_globales import *
+from constantes.constantes import *
 #tablero
 # def mostrar_tablero(tablero):
 #     """
