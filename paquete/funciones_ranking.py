@@ -1,109 +1,118 @@
-
 import pygame
 import csv
-#lectura del ranking
-def leer_ranking()-> list:
-    ranking = []
-    with open("ranking.csv", "r") as archivo:
-        lineas = archivo.readlines()
-        for linea in lineas[1:]:
-            nombre, puntaje = linea.strip().split(",")
-            ranking.append([nombre, int(puntaje)])
-    return ranking
+from constantes.constantes import BLANCO, AMARILLO, ROJO
 
-#guardado de ranking
+def leer_ranking() -> list:
+    """
+    Lee el archivo del ranking, y devuelve la lista con nombres y puntajes
+    """
+    ranking_leido = []
+    archivo_ranking_path = "ranking.csv"
 
-def guardar_ranking(ranking:list)-> None:
-    with open("ranking.csv", "w") as archivo:
-        archivo.write("Nombre,Puntaje\n")  
+    with open(archivo_ranking_path, "r", newline='') as archivo:
+        lector = csv.reader(archivo)
+        
+        # salto de primer linea
+        bandera = False
+        for fila in lector:
+            if not bandera:
+                bandera = True 
+                continue
+            
+            if len(fila) >= 2:
+                nombre = fila[0].strip()
+                puntaje_str = fila[1].strip()
+                if puntaje_str.isdigit():
+                    ranking_leido.append([nombre, int(puntaje_str)])
+    return ranking_leido #lista
 
-        for fila in ranking:
-            linea = ""
-            for i in range(len(fila)):
-                linea += str(fila[i])
-                if i < (len(fila) - 1):
-                    linea += ","
-            archivo.write(linea + "\n")
+def guardar_ranking(ranking_a_guardar: list) -> None:
+    """
+    Guardo el nuevo puntaje y jugador en el ranking
+    """
+    with open("ranking.csv", "w", newline='') as archivo:
+        escritor = csv.writer(archivo)
+        escritor.writerow(["nombre", "puntaje"])
+        for fila in ranking_a_guardar: #lista recibida
+            escritor.writerow(fila)
 
-# orden 
+def ordenar_ranking_ascendente(ranking_original: list) -> list:
+    """
+    En esta funcion ordeno el ranking en orden descendente
+    """
+    ranking_copia = list(ranking_original) # copio la lista
+    n = len(ranking_copia)
+    for i in range(n):
+        for j in range(0, n - i - 1):
+            if ranking_copia[j][1] > ranking_copia[j + 1][1]:
+                ranking_copia[j], ranking_copia[j + 1] = ranking_copia[j + 1], ranking_copia[j]
+    return ranking_copia # copia ordenada
 
-def insertar_en_posicion(ranking:list
-                         ,nombre:str
-                         ,puntaje:int)-> list:
+def insertar_en_posicion(ranking_actual: list, nombre: str, puntaje: int) -> list:
+    """
+    Esta funcion agrega una fila al ranking manteniendo el orden
+    """
     nueva_fila = [nombre, puntaje]
-    nuevo_ranking = []
+    
+    # Primero se ordena el ranking
+    ranking_ordenado = ordenar_ranking_ascendente(ranking_actual) 
+    
+    ranking_con_nuevo = []
     insertado = False
 
-    for fila in ranking:
-        if not insertado and puntaje > fila[1]:  
-            nuevo_ranking.append(nueva_fila)
+    for fila in ranking_ordenado:
+        # si el nuevo puntaje es menor que el anterior
+        if not insertado and puntaje < fila[1]:
+            ranking_con_nuevo.append(nueva_fila)
             insertado = True
-        nuevo_ranking.append(fila)
+        ranking_con_nuevo.append(fila)
 
-    if not insertado:
-        nuevo_ranking.append(nueva_fila)
+    if not insertado: # si el nuevo puntaje es mayor
+        ranking_con_nuevo.append(nueva_fila)
 
-    return nuevo_ranking
+    return ranking_con_nuevo 
 
-# isnertar al ranking
+def agregar_al_ranking(nombre: str, puntaje: int) -> None:
+    """
+    Esta funcion agrega nombre y puntaje
+    """
+    ranking_actual = leer_ranking() # nueva lista
+    ranking_final = insertar_en_posicion(ranking_actual, nombre, puntaje) 
+    guardar_ranking(ranking_final) 
 
-def agregar_al_ranking(nombre:str
-                       ,puntaje:int)-> None:
-    ranking = leer_ranking()
-    ranking = insertar_en_posicion(ranking, nombre, puntaje)
-    guardar_ranking(ranking)
-
-
-def mostrar_ranking(ventana, fondo, archivo_ranking):
-    ventana.fill((255, 0, 0))  # ROJO
+def mostrar_ranking(ventana: pygame.Surface, fondo: pygame.Surface, archivo_ranking: str) -> None:
+    """
+    Funcion que muestra  ranking en pygame
+    """
+    ventana.fill(ROJO)
     ventana.blit(fondo, (0, 0))
-    
-    # Configuración de fuentes
+
+    # fuentes
     font = pygame.font.SysFont(None, 40)
-    titulo = font.render("Ranking", True, (255, 255, 255))  # BLANCO
+    titulo = font.render("Ranking", True, AMARILLO)
     ventana.blit(titulo, (750, 150))
 
-    # Leer y procesar archivo de ranking
-    with open(archivo_ranking, newline='') as archivo:
-        lineas = list(csv.reader(archivo))
-        
-        ranking = []
-        # Saltar la primera línea (cabecera)
-        i = 1
-        while i < len(lineas):
-            fila = lineas[i]
-            if len(fila) >= 2:  # Verificar que tenga al menos nombre y puntaje
-                nombre = fila[0].strip()
-                puntaje = fila[1].strip()
-                
-                if puntaje.isdigit():
-                    ranking.append([nombre, int(puntaje)])
-            i += 1
-        
-        # Ordenamiento manual de menor a mayor
-        for j in range(len(ranking)):
-            for k in range(len(ranking)-1):
-                if ranking[k][1] > ranking[k+1][1]:
-                    # Intercambiar posiciones
-                    temp = ranking[k]
-                    ranking[k] = ranking[k+1]
-                    ranking[k+1] = temp
-
-    # Mostrar los primeros 5 resultados
-    y_pos = 200
-    max_resultados = 5
-    contador = 0
+    # Leer y ejecuta ee ranking
+    ranking_data = leer_ranking()
     
-    while contador < max_resultados and contador < len(ranking):
-        entrada = ranking[contador]
-        texto = font.render(f"{entrada[0]}: {entrada[1]} puntos", True, (255, 255, 0))  # AMARILLO
+    # ordena el ranking
+    ranking_data_ordenada = ordenar_ranking_ascendente(ranking_data)
+
+    # muestro los primeros 5
+    y_pos = 200
+    count = 0
+    for entrada in ranking_data_ordenada: 
+        if count >= 5:
+            break #rompo
+        texto = font.render(f"{entrada[0]}: {entrada[1]} puntos", True, AMARILLO)
         ventana.blit(texto, (650, y_pos))
         y_pos += 50
-        contador += 1
+        count += 1
 
-    # Texto para volver
-    font_small = pygame.font.SysFont(None, 30)
-    texto_volver = font_small.render("Presiona ESC para volver", True, (255, 255, 0))  # AMARILLO
+    # texto para volver
+    font = pygame.font.SysFont(None, 30)
+    texto_volver = font.render("Presiona ESC para volver", True, AMARILLO)
     ventana.blit(texto_volver, (690, 600))
     
     pygame.display.update()
+
